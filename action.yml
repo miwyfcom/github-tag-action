@@ -1,14 +1,14 @@
-name: 'Github Tag Bump'
-description: 'Bump and push git tag on merge'
-author: 'Nick Sjostrom'
+name: 'Github Tag'
+description: 'Bump and push git tag on merge with specified message'
+author: 'Chloe Zhang'
 runs:
   using: 'docker'
   image: 'Dockerfile'
 outputs:
+  last_tag:
+    description: 'The latest tag before running this action'
   new_tag:
-    description: 'Generated tag'
-  tag:
-    description: 'The latest tag after running this action'
+    description: 'Newly generated tag'
 branding:
-  icon: 'git-merge'  
-  color: 'purple'
+  icon: 'tag'  
+  color: 'yellow'
