@@ -2,9 +2,9 @@
 
 A Github Action to automatically bump and tag master, on merge, with the latest SemVer formatted version.
 
-[![Build Status](https://github.com/anothrNick/github-tag-action/workflows/Bump%20version/badge.svg)](https://github.com/anothrNick/github-tag-action/workflows/Bump%20version/badge.svg)
-[![Stable Version](https://img.shields.io/github/v/tag/anothrNick/github-tag-action)](https://img.shields.io/github/v/tag/anothrNick/github-tag-action)
-[![Latest Release](https://img.shields.io/github/v/release/anothrNick/github-tag-action?color=%233D9970)](https://img.shields.io/github/v/release/anothrNick/github-tag-action?color=%233D9970)
+[![Build Status](https://github.com/ChloePlanet/github-tag-action/workflows/Bump%20version/badge.svg)](https://github.com/ChloePlanet/github-tag-action/workflows/Bump%20version/badge.svg)
+[![Stable Version](https://img.shields.io/github/v/tag/ChloePlanet/github-tag-action)](https://img.shields.io/github/v/tag/ChloePlanet/github-tag-action)
+[![Latest Release](https://img.shields.io/github/v/release/ChloePlanet/github-tag-action?color=%233D9970)](https://img.shields.io/github/v/release/ChloePlanet/github-tag-action?color=%233D9970)
 
 > Medium Post: [Creating A Github Action to Tag Commits](https://itnext.io/creating-a-github-action-to-tag-commits-2722f1560dec)
 
@@ -26,7 +26,7 @@ jobs:
       with:
         fetch-depth: '0'
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@1.15.1
+      uses: ChloePlanet/github-tag-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
@@ -39,7 +39,6 @@ _NOTE: set the fetch-depth for `actions/checkout@master` to be sure you retrieve
 **Environment Variables**
 
 * **GITHUB_TOKEN** ***(required)*** - Required for permission to tag the repo.
-* **DEFAULT_BUMP** *(optional)* - Which type of bump to use when none explicitly provided (default: `minor`).
 * **WITH_V** *(optional)* - Tag version with `v` character.
 * **RELEASE_BRANCHES** *(optional)* - Comma separated list of branches (bash reg exp accepted) that will generate the release tags. Other branches and pull-requests generate versions postfixed with the commit hash and do not generate any tag. Examples: `master` or `.*` or `release.*,hotfix.*,master` ...
 * **CUSTOM_TAG** *(optional)* - Set a custom tag, useful when generating tag based on f.ex FROM image in a docker image. **Setting this tag will invalidate any other settings set!**
@@ -47,8 +46,8 @@ _NOTE: set the fetch-depth for `actions/checkout@master` to be sure you retrieve
 
 #### Outputs
 
+* **last_tag** - The value of the latest tag before running this action.
 * **new_tag** - The value of the newly created tag.
-* **tag** - The value of the latest tag after running this action.
 
 > ***Note:*** This action creates a [lightweight tag](https://developer.github.com/v3/git/refs/#create-a-reference).
 
@@ -56,30 +55,24 @@ _NOTE: set the fetch-depth for `actions/checkout@master` to be sure you retrieve
 
 **Manual Bumping:** Any commit message that includes `#major`, `#minor`, or `#patch` will trigger the respective version bump. If two or more are present, the highest-ranking one will take precedence.
 
-**Automatic Bumping:** If no `#major`, `#minor` or `#patch` tag is contained in the commit messages, it will bump whichever `DEFAULT_BUMP` is set to (which is `minor` by default).
-
 > ***Note:*** This action **will not** bump the tag if the `HEAD` commit has already been tagged.
 
 ### Workflow
 
 * Add this action to your repo
-* Commit some changes
+* Commit some changes with message contains `#major` or `#patch` or `#patch`
 * Either push to master or open a PR
 * On push (or merge) to `master`, the action will:
   * Get latest tag
-  * Bump tag with minor version unless any commit message contains `#major` or `#patch`
+  * Bump tag if commit message contains `#major` or `#patch` or `#patch`
   * Pushes tag to github
 
 ### Credits
 
+[anothrNick/github-tag-action](https://github.com/anothrNick/github-tag-action)
 [fsaintjacques/semver-tool](https://github.com/fsaintjacques/semver-tool)
 
 ### Projects using github-tag-action
 
 A list of projects using github-tag-action for reference.
 
-* another/github-tag-action (uses itself to create tags)
-
-* [anothrNick/json-tree-service](https://github.com/anothrNick/json-tree-service)
-
-  > Access JSON structure with HTTP path parameters as keys/indices to the JSON.
