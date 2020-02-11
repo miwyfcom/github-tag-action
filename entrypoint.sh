@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # config
-default_semvar_bump=${DEFAULT_BUMP:-minor}
 with_v=${WITH_V:-false}
 release_branches=${RELEASE_BRANCHES:-master}
 custom_tag=${CUSTOM_TAG}
@@ -31,8 +30,8 @@ tag_commit=$(git rev-list -n 1 $tag)
 commit=$(git rev-parse HEAD)
 
 if [ "$tag_commit" == "$commit" ]; then
-    echo "No new commits since previous tag. Skipping..."
-    echo ::set-output name=tag::$tag
+    echo "No new commits since previous tag. Skipping the tag creation..."
+    echo ::set-output name=last_tag::$tag
     exit 0
 fi
 
@@ -48,12 +47,16 @@ fi
 echo $log
 
 # get commit logs and determine home to bump the version
-# supports #major, #minor, #patch (anything else will be 'minor')
+# supports #major, #minor, #patch
 case "$log" in
     *#major* ) new=$(semver bump major $tag);;
     *#minor* ) new=$(semver bump minor $tag);;
     *#patch* ) new=$(semver bump patch $tag);;
-    * ) new=$(semver bump `echo $default_semvar_bump` $tag);;
+    * )
+        echo "This commit message doesn't include #major, #minor or #patch. Skipping the tag creation..."
+        echo ::set-output name=last_tag::$tag
+        exit 0
+        ;;
 esac
 
 # did we get a new tag?
@@ -79,12 +82,12 @@ fi
 echo $new
 
 # set outputs
+echo ::set-output name=last_tag::$tag
 echo ::set-output name=new_tag::$new
-echo ::set-output name=tag::$new
 
 if $pre_release
 then
-    echo "This branch is not a release branch. Skipping the tag creation."
+    echo "This branch is not a release branch. Skipping the tag creation..."
     exit 0
 fi
 
