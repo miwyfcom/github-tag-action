@@ -40,7 +40,7 @@ jobs:
 
 > ***NOTE***: set the fetch-depth for `actions/checkout@master` to be sure you retrieve all commits to look for the semver commit message.
 
-Use [GitHub Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) `${{ secrets.REPO_ACCESS_TOKEN }}` if you want to trigger another workflow by this workflow.
+Use [GitHub Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) `${{ secrets.REPO_ACCESS_TOKEN }}` in `GITHUB_TOKEN` if you want to trigger another workflow by this workflow.
 
 ```YAML
 name: Another workflow on tag generated
@@ -63,7 +63,7 @@ jobs:
 
 
 
-### Workflow
+## Workflow
 
 * Add this action to your repo
 * Commit some changes with message contains `#major` or `#patch` or `#patch`
@@ -86,27 +86,27 @@ jobs:
 
 
 
-#### Outputs
+## Outputs
 
 * **last_tag** - The value of the latest tag before running this action.
 * **new_tag** - The value of the newly created tag.
 
 
 
-### Credits
+## Credits
 
 [anothrNick/github-tag-action](https://github.com/anothrNick/github-tag-action)
 [fsaintjacques/semver-tool](https://github.com/fsaintjacques/semver-tool)
 
 
 
-### Projects using Git Tag Generator
+## Projects using Git Tag Generator
 
 A list of projects using Git Tag Generator for reference.
 
 
 
-### License
+## License
 
 [MIT License](https://github.com/ChloePlanet/github-tag-action/blob/master/LICENSE)
 
