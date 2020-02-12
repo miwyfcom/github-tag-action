@@ -7,7 +7,6 @@ on:
 
 jobs:
   myJob:
-    name: On tag generated
     runs-on: ubuntu-latest
     steps:
       # Whatever you want to do on tag generated like:
