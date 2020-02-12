@@ -19,7 +19,7 @@ jobs:
         uses: ChloePlanet/github-tag-action@master
         env:
           # Use ${{ secrets.GITHUB_TOKEN }} by default.
-          # Use personal access token ${{ secrets.REPO_ACCESS_TOKEN }} if you
+          # Use GitHub Personal Access Token ${{ secrets.REPO_ACCESS_TOKEN }} if you
           # want to trigger another workflow by this step.
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
           WITH_V: true
