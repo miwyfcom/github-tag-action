@@ -1,5 +1,5 @@
 name: 'Git Tag Generator'
-description: 'Bump and push git tag on push/merge with specified commit message'
+description: 'Generate and push SemVer formatted git tag on push/merge with specified commit message'
 author: 'Chloe Zhang'
 runs:
   using: 'docker'
