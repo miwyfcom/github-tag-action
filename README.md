@@ -1,61 +1,67 @@
-# github-tag-action
+# Git Tag Generator
 
-A Github Action to automatically bump and tag master, on merge, with the latest SemVer formatted version.
+A GitHub Action to automatically push new tag to master, on push or merge with the latest SemVer formatted version if the commit message contains specified keywords.
+
+> ***Note:*** This action creates a [lightweight tag](https://developer.github.com/v3/git/refs/#create-a-reference).
 
 [![Build Status](https://github.com/ChloePlanet/github-tag-action/workflows/Bump%20version/badge.svg)](https://github.com/ChloePlanet/github-tag-action/workflows/Bump%20version/badge.svg)
 [![Stable Version](https://img.shields.io/github/v/tag/ChloePlanet/github-tag-action)](https://img.shields.io/github/v/tag/ChloePlanet/github-tag-action)
 [![Latest Release](https://img.shields.io/github/v/release/ChloePlanet/github-tag-action?color=%233D9970)](https://img.shields.io/github/v/release/ChloePlanet/github-tag-action?color=%233D9970)
 
-> Medium Post: [Creating A Github Action to Tag Commits](https://itnext.io/creating-a-github-action-to-tag-commits-2722f1560dec)
 
-[<img src="https://miro.medium.com/max/1200/1*_4Ex1uUhL93a3bHyC-TgPg.png" width="400">](https://itnext.io/creating-a-github-action-to-tag-commits-2722f1560dec)
 
-### Usage
+## Usage
 
-```Dockerfile
-name: Bump version
+```YAML
+name: Generate tag
+
 on:
   push:
     branches:
       - master
+
 jobs:
   build:
+    name: Generate tag
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-      with:
-        fetch-depth: '0'
-    - name: Bump version and push tag
-      uses: ChloePlanet/github-tag-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
+      - name: Check out code
+        uses: actions/checkout@master
+        with:
+          fetch-depth: '0'
+
+      - name: Bump version and push tag
+        uses: ChloePlanet/github-tag-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+
 ```
 
-_NOTE: set the fetch-depth for `actions/checkout@master` to be sure you retrieve all commits to look for the semver commit message._
+> ***NOTE***: set the fetch-depth for `actions/checkout@master` to be sure you retrieve all commits to look for the semver commit message.
 
-#### Options
+Use [GitHub Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) `${{ secrets.REPO_ACCESS_TOKEN }}` if you want to trigger another workflow by this workflow.
 
-**Environment Variables**
+```YAML
+name: Another workflow on tag generated
 
-* **GITHUB_TOKEN** ***(required)*** - Required for permission to tag the repo.
-* **WITH_V** *(optional)* - Tag version with `v` character.
-* **RELEASE_BRANCHES** *(optional)* - Comma separated list of branches (bash reg exp accepted) that will generate the release tags. Other branches and pull-requests generate versions postfixed with the commit hash and do not generate any tag. Examples: `master` or `.*` or `release.*,hotfix.*,master` ...
-* **CUSTOM_TAG** *(optional)* - Set a custom tag, useful when generating tag based on f.ex FROM image in a docker image. **Setting this tag will invalidate any other settings set!**
-* **SOURCE** *(optional)* - Operate on a relative path under $GITHUB_WORKSPACE.
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
-#### Outputs
+jobs:
+  myJob:
+    name: On tag generated
+    runs-on: ubuntu-latest
+    steps:
+      # Whatever you want to do on tag generated
 
-* **last_tag** - The value of the latest tag before running this action.
-* **new_tag** - The value of the newly created tag.
+```
 
-> ***Note:*** This action creates a [lightweight tag](https://developer.github.com/v3/git/refs/#create-a-reference).
+> An action in a workflow run can't trigger a new workflow run. When you use GITHUB_TOKEN in your actions, all of the interactions with the repository are on behalf of the Github-actions bot. The operations act by Github-actions bot cannot trigger a new workflow run. More details: https://help.github.com/en/actions/reference/events-that-trigger-workflows#about-workflow-events
 
-### Bumping
 
-**Manual Bumping:** Any commit message that includes `#major`, `#minor`, or `#patch` will trigger the respective version bump. If two or more are present, the highest-ranking one will take precedence.
-
-> ***Note:*** This action **will not** bump the tag if the `HEAD` commit has already been tagged.
 
 ### Workflow
 
@@ -64,15 +70,43 @@ _NOTE: set the fetch-depth for `actions/checkout@master` to be sure you retrieve
 * Either push to master or open a PR
 * On push (or merge) to `master`, the action will:
   * Get latest tag
-  * Bump tag if commit message contains `#major` or `#patch` or `#patch`
-  * Pushes tag to github
+  * Generate tag if commit message contains `#major` or `#patch` or `#patch`
+    > ***Note:*** This action **will not** push the tag if the `HEAD` commit has already been tagged. If two or more keywords are present, the highest-ranking one will take precedence.
+  * Pushes tag to GitHub
+
+
+
+## Environment Variables
+
+* **GITHUB_TOKEN** ***(required)*** - Required for permission to tag the repo.
+* **WITH_V** *(optional)* - Tag version with `v` character.
+* **RELEASE_BRANCHES** *(optional)* - Comma separated list of branches (bash reg exp accepted) that will generate the release tags. Other branches and pull-requests generate versions postfixed with the commit hash and do not generate any tag. Examples: `master` or `.*` or `release.*,hotfix.*,master` ...
+* **CUSTOM_TAG** *(optional)* - Set a custom tag, useful when generating tag based on f.ex FROM image in a docker image. **Setting this tag will invalidate any other settings set!**
+* **SOURCE** *(optional)* - Operate on a relative path under $GITHUB_WORKSPACE.
+
+
+
+#### Outputs
+
+* **last_tag** - The value of the latest tag before running this action.
+* **new_tag** - The value of the newly created tag.
+
+
 
 ### Credits
 
 [anothrNick/github-tag-action](https://github.com/anothrNick/github-tag-action)
 [fsaintjacques/semver-tool](https://github.com/fsaintjacques/semver-tool)
 
-### Projects using github-tag-action
 
-A list of projects using github-tag-action for reference.
+
+### Projects using Git Tag Generator
+
+A list of projects using Git Tag Generator for reference.
+
+
+
+### License
+
+[MIT License](https://github.com/ChloePlanet/github-tag-action/blob/master/LICENSE)
 
