@@ -1,5 +1,5 @@
-name: 'Github Tag'
-description: 'Bump and push git tag on merge with specified message'
+name: 'Git Tag Generator'
+description: 'Bump and push git tag on push/merge with specified commit message'
 author: 'Chloe Zhang'
 runs:
   using: 'docker'
