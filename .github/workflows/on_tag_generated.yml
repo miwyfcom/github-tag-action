@@ -3,7 +3,7 @@ name: On tag generated
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - '*.*.*'
 
 jobs:
   myJob:
