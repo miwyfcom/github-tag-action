@@ -90,6 +90,14 @@ jobs:
 
 * **last_tag** - The value of the latest tag before running this action.
 * **new_tag** - The value of the newly created tag.
+* **tag_generated** - 1 if new tag is generated successfully. 0 if no tag is generated
+* **last_major** - The major part of last tag
+* **last_minor** - The minor part of last tag
+* **last_patch** - The patch part of last tag
+* **major** - The major part of new tag
+* **minor** - The minor part of new tag
+* **patch** - The patch part of new tag
+* **bump_ver** - The bump version string e.g. `major`, `minor` or `patch`
 
 
 

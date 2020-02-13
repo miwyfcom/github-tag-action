@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo ::set-output name=tag_generated::0
+
 # config
 with_v=${WITH_V:-false}
 release_branches=${RELEASE_BRANCHES:-master}
@@ -26,6 +28,14 @@ git fetch --tags
 tag=$(git for-each-ref --sort=-v:refname --count=1 --format '%(refname)' refs/tags/[0-9]*.[0-9]*.[0-9]* refs/tags/v[0-9]*.[0-9]*.[0-9]* | cut -d / -f 3-)
 tag_commit=$(git rev-list -n 1 $tag)
 
+echo $tag
+last_major=$(semver get major $tag)
+last_minor=$(semver get minor $tag)
+last_patch=$(semver get patch $tag)
+echo ::set-output name=last_major::$last_major
+echo ::set-output name=last_minor::$last_minor
+echo ::set-output name=last_patch::$last_patch
+
 # get current commit hash for tag
 commit=$(git rev-parse HEAD)
 
@@ -49,9 +59,18 @@ echo $log
 # get commit logs and determine home to bump the version
 # supports #major, #minor, #patch
 case "$log" in
-    *#major* ) new=$(semver bump major $tag);;
-    *#minor* ) new=$(semver bump minor $tag);;
-    *#patch* ) new=$(semver bump patch $tag);;
+    *#major* ) 
+        new=$(semver bump major $tag)
+        bump_ver="major"
+        ;;
+    *#minor* ) 
+        new=$(semver bump minor $tag)
+        bump_ver="minor"
+        ;;
+    *#patch* ) 
+        new=$(semver bump patch $tag)
+        bump_ver="patch"
+        ;;
     * )
         echo "This commit message doesn't include #major, #minor or #patch. Skipping the tag creation..."
         echo ::set-output name=last_tag::$tag
@@ -80,10 +99,17 @@ then
 fi
 
 echo $new
+major=$(semver get major $new)
+minor=$(semver get minor $new)
+patch=$(semver get patch $new)
 
 # set outputs
 echo ::set-output name=last_tag::$tag
 echo ::set-output name=new_tag::$new
+echo ::set-output name=major::$major
+echo ::set-output name=minor::$minor
+echo ::set-output name=patch::$patch
+echo ::set-output name=bump_ver::$bump_ver
 
 if $pre_release
 then
@@ -107,3 +133,4 @@ curl -s -X POST $git_refs_url \
   "sha": "$commit"
 }
 EOF
+echo ::set-output name=tag_generated::1
